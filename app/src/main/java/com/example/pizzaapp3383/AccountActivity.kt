@@ -1,32 +1,20 @@
 package com.example.pizzaapp3383
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class MainActivity : AppCompatActivity() {
+class AccountActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_account)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-        }
-
-//        Instance
-        val btnNext: Button = findViewById(R.id.buttonNext)
-
-//        event -> di-klik
-        btnNext.setOnClickListener {
-//            inttent -> call activity login
-            val intentLogin = Intent(this, LoginActivity::class.java)
-            startActivity(intentLogin)
         }
     }
 }

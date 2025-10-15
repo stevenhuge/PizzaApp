@@ -1,6 +1,8 @@
 package com.example.pizzaapp3383
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +17,13 @@ class LoginActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val btnLogin: Button = findViewById(R.id.buttonNext)
+
+        btnLogin.setOnClickListener {
+            val intentAccount = Intent(this, AccountActivity::class.java)
+            startActivity(intentAccount)
         }
     }
 }
