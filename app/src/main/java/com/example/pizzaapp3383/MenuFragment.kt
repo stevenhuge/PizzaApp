@@ -52,6 +52,13 @@ class MenuFragment : Fragment() {
         menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 2", "200.000"))
         menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 3", "300.000"))
         menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 4", "400.000"))
+        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 5", "500.000"))
+        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 6", "600.000"))
+        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 7", "700.000"))
+        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 8", "800.000"))
+        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 9", "900.000"))
+        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 10", "1.000.000"))
+
 
         // set adapter
         val adapter = AdaptorMenu(menu)
