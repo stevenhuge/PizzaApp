@@ -9,6 +9,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.pizzaapp3383.client.RetrofitClient
+import com.example.pizzaapp3383.response.account.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,18 +30,48 @@ class LoginActivity : AppCompatActivity() {
         val txtUsername: EditText = findViewById(R.id.editTextUsername)
         val txtPassword: EditText = findViewById(R.id.editTextPassword)
         val btnLogin: Button = findViewById(R.id.buttonNext)
-        val Username = "awan"
-        val Password = "123"
 
         btnLogin.setOnClickListener {
-//            val intentAccount = Intent(this, AccountActivity::class.java)
-//            startActivity(intentAccount)
-            if(txtUsername.text.toString().equals(Username) && txtPassword.text.toString().equals(Password)) {
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Login failed, Check your email and password", Toast.LENGTH_SHORT).show()
+            var user = txtUsername.text.toString().trim()
+            var pwd = txtPassword.text.toString().trim()
+
+            if (user.isEmpty()) {
+                txtUsername.error = "Email required"
+                txtUsername.requestFocus()
+                return@setOnClickListener
             }
+
+            if (pwd.isEmpty()) {
+                txtUsername.error = "Password required"
+                txtUsername.requestFocus()
+                return@setOnClickListener
+            }
+
+            RetrofitClient.instance.postLogin(user, pwd).enqueue(
+                object : Callback<LoginResponse> {
+                    override fun onResponse(
+                        call: Call<LoginResponse>,
+                        response: Response<LoginResponse>
+                    ) {
+                        val account = response.body()
+                        if (account?.success == true) {
+                            Toast.makeText(this@LoginActivity,
+                                account?.message.toString(), Toast.LENGTH_SHORT).show()
+                            val intentLogin = Intent(this@LoginActivity,
+                                HomeActivity::class.java)
+                            startActivity(intentLogin)
+                        } else {
+                            Toast.makeText(this@LoginActivity,
+                                account?.message.toString(), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+
         }
     }
 }
