@@ -5,8 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pizzaapp3383.client.RetrofitClient
+import com.example.pizzaapp3383.response.food.FoodResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +28,8 @@ class MenuFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private val listMenu = ArrayList<FoodResponse>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,28 +50,27 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // add data to recyclerViewMenu
-        val rvMenu = view.findViewById<RecyclerView>(R.id.recyclerViewMenu)
-        rvMenu.layoutManager = GridLayoutManager(activity, 2)
+        val txtSearch: EditText = view.findViewById(R.id.editTextCari)
 
-        // add data
-        val menu = ArrayList<MenuModel>()
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 1", "100.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 2", "200.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 3", "300.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 4", "400.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 5", "500.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 6", "600.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 7", "700.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 8", "800.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 9", "900.000"))
-        menu.add(MenuModel(R.drawable.logo_pizza, "Pizza 10", "1.000.000"))
+        val RVMenu: RecyclerView = view.findViewById(R.id.recyclerViewMenu)
 
-
-        // set adapter
-        val adapter = AdaptorMenu(menu)
-        rvMenu.adapter = adapter
-
+        RVMenu.layoutManager = GridLayoutManager(activity, 2)
+        RetrofitClient.instance.getFood().enqueue(
+            object : Callback<ArrayList<FoodResponse>> {
+                override fun onResponse(
+                    call: Call<ArrayList<FoodResponse>>,
+                    response: Response<ArrayList<FoodResponse>>
+                ) {
+                    listMenu.clear()
+                    response.body()?.let { listMenu.addAll(it) }
+                    var adapter = AdaptorMenu(listMenu)
+                    RVMenu.adapter = adapter
+                }
+                override fun onFailure(p0: Call<ArrayList<FoodResponse>?>, p1: Throwable) {
+                    TODO("Not yet implemented")
+                }
+            }
+        )
     }
 
     companion object {
