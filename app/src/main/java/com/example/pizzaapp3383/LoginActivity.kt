@@ -1,5 +1,6 @@
 package com.example.pizzaapp3383
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -15,12 +16,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class LoginActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -32,8 +34,8 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin: Button = findViewById(R.id.buttonNext)
 
         btnLogin.setOnClickListener {
-            var user = txtUsername.text.toString().trim()
-            var pwd = txtPassword.text.toString().trim()
+            val user = txtUsername.text.toString().trim()
+            val pwd = txtPassword.text.toString().trim()
 
             if (user.isEmpty()) {
                 txtUsername.error = "Email required"
@@ -42,8 +44,8 @@ class LoginActivity : AppCompatActivity() {
             }
 
             if (pwd.isEmpty()) {
-                txtUsername.error = "Password required"
-                txtUsername.requestFocus()
+                txtPassword.error = "Password required"
+                txtPassword.requestFocus()
                 return@setOnClickListener
             }
 
@@ -54,24 +56,35 @@ class LoginActivity : AppCompatActivity() {
                         response: Response<LoginResponse>
                     ) {
                         val account = response.body()
-                        if (account?.success == true) {
-                            Toast.makeText(this@LoginActivity,
-                                account?.message.toString(), Toast.LENGTH_SHORT).show()
-                            val intentLogin = Intent(this@LoginActivity,
-                                HomeActivity::class.java)
-                            startActivity(intentLogin)
+                        if (response.isSuccessful && account?.success == true) {
+
+                            // 1. Simpan data ke SharedPreferences agar bisa dibaca Fragment
+                            val sharedPref = getSharedPreferences("USER_PREF", Context.MODE_PRIVATE)
+                            val editor = sharedPref.edit()
+                            editor.putString("key_name", account.data.name)
+                            editor.putString("key_email", account.data.username) // API biasanya mengembalikan username sebagai email
+                            editor.putString("key_level", account.data.level)
+                            editor.putString("key_password", account.data.password)
+                            editor.apply()
+
+                            Toast.makeText(this@LoginActivity, "Login Berhasil", Toast.LENGTH_SHORT).show()
+
+                            // 2. Pindah ke Home
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+
                         } else {
-                            Toast.makeText(this@LoginActivity,
-                                account?.message.toString(), Toast.LENGTH_SHORT).show()
+                            val msg = account?.message ?: "Login Gagal"
+                            Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             )
-
         }
     }
 }

@@ -15,7 +15,7 @@ class AdaptorMenu(private val listMenu: ArrayList<FoodResponse>): RecyclerView.A
     inner class ViewHolder(v: View): RecyclerView.ViewHolder(v) {
         val imgPhotoMenu: ImageView = v.findViewById(R.id.imageViewMenu)
         val textNameMenu: TextView = v.findViewById(R.id.textViewNamaMenu)
-        val textPriceMenu: TextView = v.findViewById(R.id.textViewNamaMenu)
+        val textPriceMenu: TextView = v.findViewById(R.id.textViewHargaMenu)
         val context: Context? = v.context
 
         fun bind(response: FoodResponse) {
@@ -25,7 +25,7 @@ class AdaptorMenu(private val listMenu: ArrayList<FoodResponse>): RecyclerView.A
 
             textNameMenu.text = name
             textPriceMenu.text = price
-            val url = "http://10.103.9.237/rest_api3383/gambar/" + picture
+            val url = "http://192.168.100.193/rest_api3383/gambar/" + picture
             Picasso.get().load(url).into(imgPhotoMenu)
         }
     }
